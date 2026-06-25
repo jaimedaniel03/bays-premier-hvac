@@ -7,8 +7,10 @@
   One-time activation: first submission emails a confirm link to the Gmail — click once.
   Fill CSLB # before launch. To use the real logo PNG, save bays-logo.png beside this file.
 -->
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0a0a0b">
 <title>Bay's Premier Heating &amp; A/C — Bay Area Heating, Cooling &amp; Air Conditioning</title>
 <meta name="description" content="Bay's Premier Heating and A/C — premium, locally owned heating and air conditioning across Santa Clara County and the Bay Area. Free estimates, flat upfront pricing, licensed & insured, satisfaction guaranteed. Call (408) 504-7959.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,6 +32,8 @@
   html{scroll-behavior:smooth;scroll-padding-top:90px}
   body{font-family:var(--sans);color:var(--text);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
   a{color:inherit;text-decoration:none}
+  .skip-link{position:absolute;left:-999px;top:0;z-index:300;background:var(--gold);color:var(--ink);padding:10px 16px;border-radius:0 0 8px 0;font-weight:700}
+  .skip-link:focus{left:0}
   img{max-width:100%}
   [hidden]{display:none!important}
   h1,h2,h3,h4{font-family:var(--serif);color:var(--cream);line-height:1.12;font-weight:700;letter-spacing:-.01em}
@@ -244,6 +248,10 @@
     section{padding:54px 0}
   }
 </style>
+</head>
+
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
 
 <!-- ===== shared SVG defs: emblem (gold flame + snowflake) ===== -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -289,6 +297,8 @@
 </header>
 
 <a id="top"></a>
+
+<main id="main">
 
 <!-- ===== HERO ===== -->
 <section class="hero">
@@ -452,6 +462,8 @@
     </div>
   </div>
 </section>
+
+</main>
 
 <!-- ===== FOOTER ===== -->
 <footer>
@@ -734,4 +746,5 @@
     document.addEventListener('keydown', e => { if(e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
   })();
 </script>
+</body>
 </html>
