@@ -686,6 +686,14 @@
     const TOTAL = 5;
     let step = 1, data = {}, lastFocus = null;
     const val = id => (document.getElementById(id).value || '').trim();
+    const STORE_KEY = 'bphvac_quote_v1';
+    const CONTACT_IDS = ['qName','qPhone','qEmail','qAddress','qCity','qDate'];
+    const GROUP_MAP = { Service:'service', Urgency:'urgency', Property:'property', Preferred:'preferred' };
+    function persist(){ try{ const fields={}; CONTACT_IDS.forEach(id=>{ const e=document.getElementById(id); if(e) fields[id]=e.value; }); const age=document.getElementById('qAge'); if(age) fields.qAge=age.value; localStorage.setItem(STORE_KEY, JSON.stringify({ data, step, fields, ts: Date.now() })); }catch(e){} }
+    function clearSaved(){ try{ localStorage.removeItem(STORE_KEY); }catch(e){} }
+    function loadSaved(){ try{ const raw=localStorage.getItem(STORE_KEY); if(!raw) return null; const s=JSON.parse(raw); if(!s||!s.ts||(Date.now()-s.ts)>2.592e8) return null; return s; }catch(e){ return null; } }
+    function resetForm(){ data={}; modal.querySelectorAll('.qtile.sel').forEach(t=>{ t.classList.remove('sel'); t.setAttribute('aria-checked','false'); }); CONTACT_IDS.forEach(id=>{ const e=document.getElementById(id); if(e) e.value=''; }); document.getElementById('qAge').selectedIndex=0; }
+    function restoreForm(s){ data=Object.assign({}, s.data||{}); Object.keys(GROUP_MAP).forEach(key=>{ const v=data[key]; if(v==null) return; const t=modal.querySelector('.qtile[data-group="'+GROUP_MAP[key]+'"][data-val="'+v+'"]'); if(t){ t.classList.add('sel'); t.setAttribute('aria-checked','true'); } }); const f=s.fields||{}; CONTACT_IDS.forEach(id=>{ const e=document.getElementById(id); if(e&&f[id]!=null) e.value=f[id]; }); const age=document.getElementById('qAge'); if(age&&f.qAge!=null) age.value=f.qAge; }
     const bgEls = () => ['.topbar','header.nav','#main','footer','.callbar'].map(s => document.querySelector(s)).filter(Boolean);
     function setBgInert(on){ bgEls().forEach(el => { if(on){ el.setAttribute('inert',''); el.setAttribute('aria-hidden','true'); } else { el.removeAttribute('inert'); el.removeAttribute('aria-hidden'); } }); }
     function trapTab(e){
@@ -700,13 +708,17 @@
 
     function openModal(service){
       lastFocus = document.activeElement;
-      data = {}; step = 1;
-      modal.querySelectorAll('.qtile.sel').forEach(t => { t.classList.remove('sel'); t.setAttribute('aria-checked','false'); });
-      ['qName','qPhone','qEmail','qAddress','qCity','qDate'].forEach(id => { const e = document.getElementById(id); if(e) e.value=''; });
-      document.getElementById('qAge').selectedIndex = 0;
-      if(service){
-        const t = modal.querySelector('.qtile[data-group="service"][data-val="'+service+'"]');
-        if(t){ t.classList.add('sel'); t.setAttribute('aria-checked','true'); data.Service = service; step = 2; }
+      const saved = service ? null : loadSaved();
+      if(saved){
+        resetForm(); restoreForm(saved);
+        step = Math.min(Math.max(saved.step || 1, 1), TOTAL);
+        if(step === TOTAL) renderSummary();
+      } else {
+        resetForm(); step = 1;
+        if(service){
+          const t = modal.querySelector('.qtile[data-group="service"][data-val="'+service+'"]');
+          if(t){ t.classList.add('sel'); t.setAttribute('aria-checked','true'); data.Service = service; step = 2; }
+        }
       }
       showStep(step);
       modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
@@ -745,8 +757,10 @@
         const key = g.charAt(0).toUpperCase() + g.slice(1);
         data[key] = t.dataset.val;
         err.textContent = '';
+        persist();
       });
     });
+    CONTACT_IDS.concat(['qAge']).forEach(id => { const e = document.getElementById(id); if(e) ['input','change'].forEach(ev => e.addEventListener(ev, persist)); });
 
     function collectContact(){
       data.Name = val('qName'); data.Phone = val('qPhone'); data.Email = val('qEmail');
@@ -802,6 +816,7 @@
           body: JSON.stringify(payload)
         });
         if(!res.ok) throw new Error('bad');
+        clearSaved();
         showStep('done');
       }catch(e){
         const body = Object.entries(data).map(([k,v]) => k + ': ' + v).join('\n');
@@ -813,10 +828,10 @@
 
     nextBtn.addEventListener('click', async () => {
       if(!validate(step)) return;
-      if(step < TOTAL){ step++; if(step === TOTAL) renderSummary(); showStep(step); }
+      if(step < TOTAL){ step++; if(step === TOTAL) renderSummary(); showStep(step); persist(); }
       else { await submit(); }
     });
-    backBtn.addEventListener('click', () => { if(step > 1){ step--; showStep(step); } });
+    backBtn.addEventListener('click', () => { if(step > 1){ step--; showStep(step); persist(); } });
 
     (function(){ const dq = document.getElementById('qDate'); if(dq){ const t = new Date(); t.setMinutes(t.getMinutes() - t.getTimezoneOffset()); dq.min = t.toISOString().slice(0,10); } })();
     document.querySelectorAll('.js-quote').forEach(b =>
