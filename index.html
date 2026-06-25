@@ -193,7 +193,7 @@
   .modal.open{display:block}
   .modal-overlay{position:absolute;inset:0;background:rgba(4,4,6,.8);backdrop-filter:blur(5px)}
   .modal-panel{position:relative;z-index:2;width:min(560px,92vw);margin:5vh auto;background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:0 50px 100px -30px #000;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;outline:none}
-  .modal-x{position:absolute;top:13px;right:15px;background:none;border:0;color:var(--muted);font-size:1.7rem;cursor:pointer;z-index:3;line-height:1;width:32px;height:32px;border-radius:8px}
+  .modal-x{position:absolute;top:10px;right:12px;background:none;border:0;color:var(--muted);font-size:1.7rem;cursor:pointer;z-index:3;line-height:1;width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center}
   .modal-x:hover{color:var(--gold-br);background:var(--gold-soft)}
   .qm-head{padding:26px 28px 0}
   .qm-eyebrow{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:700}
@@ -211,7 +211,7 @@
   .qtile svg{width:22px;height:22px;color:var(--gold-br);flex:none}
   .qtile small{display:block;font-weight:400;color:var(--muted);font-size:.78rem;margin-top:2px}
   .qfield{margin-top:14px}
-  .qfield label{display:block;font-weight:600;color:var(--cream);font-size:.84rem;margin-bottom:6px}
+  .qfield label,.qfield .qlabel{display:block;font-weight:600;color:var(--cream);font-size:.84rem;margin-bottom:6px}
   .qm-body input,.qm-body select{width:100%;font-family:inherit;font-size:.97rem;color:var(--cream);background:var(--field);border:1px solid var(--line2);border-radius:9px;padding:12px}
   .qm-body input::placeholder{color:#6f6a5d}
   .qm-body input:focus,.qm-body select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,76,.16)}
@@ -524,7 +524,7 @@
       <div class="qm-step" data-step="1">
         <h3>What can we help with?</h3>
         <div class="qsub">Pick the closest match — you can add details next.</div>
-        <div class="qm-tiles" id="qmService">
+        <div class="qm-tiles" id="qmService" role="radiogroup" aria-label="What can we help with?">
           <button type="button" class="qtile" data-group="service" data-val="AC repair"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="3" x2="12" y2="21"/><line x1="4" y1="7.5" x2="20" y2="16.5"/><line x1="20" y1="7.5" x2="4" y2="16.5"/></svg> AC repair</button>
           <button type="button" class="qtile" data-group="service" data-val="AC installation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="11" rx="2"/><line x1="6" y1="20" x2="6" y2="16"/><line x1="18" y1="20" x2="18" y2="16"/></svg> AC installation</button>
           <button type="button" class="qtile" data-group="service" data-val="Heating / furnace"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c3 4 1.5 6 .5 7.5C15 9.5 15.5 7 15 6c2.5 3 2 8-3 10-4.5-1.8-4.5-6-1-9.5-.2 1.8.8 2.6 1.5 2.8C10 7.5 11 4 12 3z"/></svg> Heating / furnace</button>
@@ -538,15 +538,15 @@
       <div class="qm-step" data-step="2" hidden>
         <h3>A few quick details</h3>
         <div class="qsub">This helps us prepare an accurate estimate.</div>
-        <div class="qfield"><label>How soon do you need us?</label>
-          <div class="qm-tiles one">
+        <div class="qfield"><span class="qlabel" id="lblUrgency">How soon do you need us?</span>
+          <div class="qm-tiles one" role="radiogroup" aria-labelledby="lblUrgency">
             <button type="button" class="qtile" data-group="urgency" data-val="Emergency — no heat/AC">Emergency — no heat or AC right now</button>
             <button type="button" class="qtile" data-group="urgency" data-val="Within a few days">Within a few days</button>
             <button type="button" class="qtile" data-group="urgency" data-val="Just planning ahead">Just planning ahead</button>
           </div>
         </div>
-        <div class="qfield"><label>Property type</label>
-          <div class="qm-tiles">
+        <div class="qfield"><span class="qlabel" id="lblProperty">Property type</span>
+          <div class="qm-tiles" role="radiogroup" aria-labelledby="lblProperty">
             <button type="button" class="qtile" data-group="property" data-val="House">House</button>
             <button type="button" class="qtile" data-group="property" data-val="Condo / townhome">Condo / townhome</button>
             <button type="button" class="qtile" data-group="property" data-val="Multi-unit">Multi-unit</button>
@@ -575,8 +575,8 @@
       <div class="qm-step" data-step="4" hidden>
         <h3>When should Steven come by?</h3>
         <div class="qsub">Pick a window that works — we'll confirm the exact time with you.</div>
-        <div class="qfield"><label>Preferred time of day</label>
-          <div class="qm-tiles">
+        <div class="qfield"><span class="qlabel" id="lblPreferred">Preferred time of day</span>
+          <div class="qm-tiles" role="radiogroup" aria-labelledby="lblPreferred">
             <button type="button" class="qtile" data-group="preferred" data-val="Morning (8am–12pm)">Morning<small>8am–12pm</small></button>
             <button type="button" class="qtile" data-group="preferred" data-val="Afternoon (12pm–4pm)">Afternoon<small>12pm–4pm</small></button>
             <button type="button" class="qtile" data-group="preferred" data-val="Evening (4pm–7pm)">Evening<small>4pm–7pm</small></button>
@@ -602,7 +602,7 @@
         </div>
       </div>
 
-      <div class="qerr" id="qmErr"></div>
+      <div class="qerr" id="qmErr" role="alert" aria-live="assertive"></div>
     </div>
     <div class="qm-foot" id="qmFoot">
       <button class="btn ghost" id="qmBack" type="button">Back</button>
@@ -632,26 +632,43 @@
     const nextBtn = document.getElementById('qmNext');
     const err = document.getElementById('qmErr');
     const TOTAL = 5;
-    let step = 1, data = {};
+    let step = 1, data = {}, lastFocus = null;
     const val = id => (document.getElementById(id).value || '').trim();
+    const bgEls = () => ['.topbar','header.nav','#main','footer','.callbar'].map(s => document.querySelector(s)).filter(Boolean);
+    function setBgInert(on){ bgEls().forEach(el => { if(on){ el.setAttribute('inert',''); el.setAttribute('aria-hidden','true'); } else { el.removeAttribute('inert'); el.removeAttribute('aria-hidden'); } }); }
+    function trapTab(e){
+      if(e.key !== 'Tab') return;
+      const sel = 'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+      const f = Array.from(modal.querySelectorAll(sel)).filter(el => el.offsetParent !== null && getComputedStyle(el).visibility !== 'hidden');
+      if(!f.length) return;
+      const first = f[0], last = f[f.length - 1];
+      if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+      else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+    }
 
     function openModal(service){
+      lastFocus = document.activeElement;
       data = {}; step = 1;
-      modal.querySelectorAll('.qtile.sel').forEach(t => t.classList.remove('sel'));
+      modal.querySelectorAll('.qtile.sel').forEach(t => { t.classList.remove('sel'); t.setAttribute('aria-checked','false'); });
       ['qName','qPhone','qEmail','qAddress','qCity','qDate'].forEach(id => { const e = document.getElementById(id); if(e) e.value=''; });
       document.getElementById('qAge').selectedIndex = 0;
       if(service){
         const t = modal.querySelector('.qtile[data-group="service"][data-val="'+service+'"]');
-        if(t){ t.classList.add('sel'); data.Service = service; step = 2; }
+        if(t){ t.classList.add('sel'); t.setAttribute('aria-checked','true'); data.Service = service; step = 2; }
       }
       showStep(step);
       modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
+      setBgInert(true);
       document.body.style.overflow = 'hidden';
+      document.addEventListener('keydown', trapTab);
       modal.querySelector('.modal-panel').focus();
     }
     function closeModal(){
       modal.classList.remove('open'); modal.setAttribute('aria-hidden','true');
+      setBgInert(false);
       document.body.style.overflow = '';
+      document.removeEventListener('keydown', trapTab);
+      if(lastFocus && lastFocus.focus) lastFocus.focus();
     }
     function showStep(n){
       steps.forEach(s => s.hidden = s.dataset.step !== String(n));
@@ -668,10 +685,11 @@
 
     // selectable tiles (radio within data-group)
     modal.querySelectorAll('.qtile').forEach(t => {
+      t.setAttribute('role','radio'); t.setAttribute('aria-checked','false');
       t.addEventListener('click', () => {
         const g = t.dataset.group;
-        modal.querySelectorAll('.qtile[data-group="'+g+'"]').forEach(x => x.classList.remove('sel'));
-        t.classList.add('sel');
+        modal.querySelectorAll('.qtile[data-group="'+g+'"]').forEach(x => { x.classList.remove('sel'); x.setAttribute('aria-checked','false'); });
+        t.classList.add('sel'); t.setAttribute('aria-checked','true');
         const key = g.charAt(0).toUpperCase() + g.slice(1);
         data[key] = t.dataset.val;
         err.textContent = '';
