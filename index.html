@@ -762,7 +762,9 @@
       }
       if(n === 3){
         if(!val('qName')){ err.textContent = 'Please enter your name.'; return false; }
-        if(!val('qPhone')){ err.textContent = 'Please enter a phone number.'; return false; }
+        const phone = val('qPhone');
+        if(!phone){ err.textContent = 'Please enter a phone number.'; return false; }
+        if(phone.replace(/\D/g,'').length < 10){ err.textContent = 'Please enter a valid phone number (at least 10 digits).'; return false; }
         if(!val('qAddress')){ err.textContent = 'Please add your street address so Steven can come out.'; return false; }
         if(!val('qCity')){ err.textContent = 'Please enter your city.'; return false; }
         const email = val('qEmail');
@@ -782,8 +784,9 @@
         ['Email', data.Email || '—'], ['Address', data.Address], ['City', data.City],
         ['Preferred time', data.Preferred], ['Preferred date', data['Preferred date']]
       ];
+      const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
       document.getElementById('qmSummary').innerHTML =
-        rows.map(r => '<li><b>'+r[0]+'</b><span>'+(r[1]||'—')+'</span></li>').join('');
+        rows.map(r => '<li><b>'+esc(r[0])+'</b><span>'+esc(r[1] || '—')+'</span></li>').join('');
     }
     async function submit(){
       collectContact();
@@ -815,6 +818,7 @@
     });
     backBtn.addEventListener('click', () => { if(step > 1){ step--; showStep(step); } });
 
+    (function(){ const dq = document.getElementById('qDate'); if(dq){ const t = new Date(); t.setMinutes(t.getMinutes() - t.getTimezoneOffset()); dq.min = t.toISOString().slice(0,10); } })();
     document.querySelectorAll('.js-quote').forEach(b =>
       b.addEventListener('click', e => { e.preventDefault(); openModal(b.dataset.service || ''); }));
     modal.querySelectorAll('[data-close]').forEach(c => c.addEventListener('click', closeModal));
