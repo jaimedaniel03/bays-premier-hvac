@@ -699,7 +699,7 @@
     function trapTab(e){
       if(e.key !== 'Tab') return;
       const sel = 'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
-      const f = Array.from(modal.querySelectorAll(sel)).filter(el => el.offsetParent !== null && getComputedStyle(el).visibility !== 'hidden');
+      const f = Array.from(modal.querySelectorAll(sel)).filter(el => el.offsetParent !== null && getComputedStyle(el).visibility !== 'hidden' && el.tabIndex !== -1);
       if(!f.length) return;
       const first = f[0], last = f[f.length - 1];
       if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
@@ -720,6 +720,7 @@
           if(t){ t.classList.add('sel'); t.setAttribute('aria-checked','true'); data.Service = service; step = 2; }
         }
       }
+      setRovingAll();
       showStep(step);
       modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
       setBgInert(true);
@@ -747,17 +748,31 @@
       }
     }
 
-    // selectable tiles (radio within data-group)
+    // radiogroup tiles: roving tabindex + arrow-key navigation
+    const GROUPS = ['service','urgency','property','preferred'];
+    function tilesIn(g){ return Array.from(modal.querySelectorAll('.qtile[data-group="'+g+'"]')); }
+    function setRoving(g){ const ts = tilesIn(g); const sel = ts.find(t => t.classList.contains('sel')); ts.forEach((t,i) => t.tabIndex = (sel ? t === sel : i === 0) ? 0 : -1); }
+    function setRovingAll(){ GROUPS.forEach(setRoving); }
     modal.querySelectorAll('.qtile').forEach(t => {
-      t.setAttribute('role','radio'); t.setAttribute('aria-checked','false');
+      t.setAttribute('role','radio'); t.setAttribute('aria-checked','false'); t.tabIndex = -1;
       t.addEventListener('click', () => {
         const g = t.dataset.group;
         modal.querySelectorAll('.qtile[data-group="'+g+'"]').forEach(x => { x.classList.remove('sel'); x.setAttribute('aria-checked','false'); });
         t.classList.add('sel'); t.setAttribute('aria-checked','true');
         const key = g.charAt(0).toUpperCase() + g.slice(1);
         data[key] = t.dataset.val;
+        setRoving(g);
         err.textContent = '';
         persist();
+      });
+      t.addEventListener('keydown', e => {
+        const g = t.dataset.group, ts = tilesIn(g); let i = ts.indexOf(t);
+        if(e.key === 'ArrowDown' || e.key === 'ArrowRight'){ e.preventDefault(); i = (i + 1) % ts.length; }
+        else if(e.key === 'ArrowUp' || e.key === 'ArrowLeft'){ e.preventDefault(); i = (i - 1 + ts.length) % ts.length; }
+        else if(e.key === 'Home'){ e.preventDefault(); i = 0; }
+        else if(e.key === 'End'){ e.preventDefault(); i = ts.length - 1; }
+        else return;
+        ts[i].focus(); ts[i].click();
       });
     });
     CONTACT_IDS.concat(['qAge']).forEach(id => { const e = document.getElementById(id); if(e) ['input','change'].forEach(ev => e.addEventListener(ev, persist)); });
