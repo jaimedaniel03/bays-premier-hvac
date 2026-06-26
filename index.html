@@ -246,7 +246,7 @@
   .qtile small{display:block;font-weight:400;color:var(--muted);font-size:.78rem;margin-top:2px}
   .qfield{margin-top:14px}
   .qfield label,.qfield .qlabel{display:block;font-weight:600;color:var(--cream);font-size:.84rem;margin-bottom:6px}
-  .qm-body input,.qm-body select{width:100%;font-family:inherit;font-size:.97rem;color:var(--cream);background:var(--field);border:1px solid var(--line2);border-radius:9px;padding:12px}
+  .qm-body input,.qm-body select{width:100%;font-family:inherit;font-size:.97rem;color:var(--cream);background:var(--field);border:1px solid rgba(201,162,76,.55);border-radius:9px;padding:12px}
   .qm-body input::placeholder{color:#8f877a}
   .qm-body input:focus,.qm-body select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,76,.16)}
   .qrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -270,7 +270,7 @@
     .grid3,.promise{grid-template-columns:1fr 1fr}
     .whygrid,.cgrid{grid-template-columns:1fr;gap:30px}
     .fgrid{grid-template-columns:1fr 1fr}
-    .topbar .r .hide{display:none}
+    .topbar .hide{display:none}
     .hero .embwatermark{display:none}
     .callbar{display:flex}
     .nav .btn.primary{display:none}
@@ -309,7 +309,7 @@
 <!-- ===== TOP STRIP ===== -->
 <div class="topbar">
   <div class="wrap">
-    <div><b>★ Licensed &amp; Insured</b> · Locally owned by Steven Escobar · Bay Area</div>
+    <div><b>★ Licensed &amp; Insured</b><span class="hide"> · Locally owned by Steven Escobar · Bay Area</span></div>
     <div class="r"><span class="hide">Mon–Sat 7am–7pm · Same-day &amp; emergency service</span><a href="tel:+14085047959"><b>(408) 504-7959</b></a></div>
   </div>
 </div>
